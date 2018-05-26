@@ -166,6 +166,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="KLib.ico" />
+    <Image Include="lena_gray.bmp" />
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>

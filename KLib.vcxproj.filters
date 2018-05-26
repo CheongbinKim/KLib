@@ -57,6 +57,9 @@
     <Image Include="KLib.ico">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="lena_gray.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="sample.xml">

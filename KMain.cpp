@@ -1,5 +1,7 @@
 #include "stdafx.h"
+
 #include "KMain.h"
+#include "resource.h"
 #include <stdio.h>
 #include<time.h>
 #include<stdlib.h>
@@ -16,7 +18,12 @@
 int mx;
 int my;
 HWND mHwnd;
+HINSTANCE mInst;
+
 int puzzle[MAX][MAX] = { 0 };
+
+HBITMAP hBitmap;
+RECT crt;
 
 #pragma warning(disable:4996)
 void initArray();
@@ -102,10 +109,15 @@ void shakeArray()
 	}
 }
 
-void OnCreate(HWND hWnd)
+void OnCreate(HWND hWnd, HINSTANCE hInst)
 {
 	mHwnd = hWnd;
+	mInst = hInst;
 	srand(time(NULL));
+
+	hBitmap = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP2));
+	GetClientRect(hWnd, &crt);
+
 	startNewGame();
 }
 
@@ -127,13 +139,27 @@ int gameOver()
 }
 
 
+
 void OnDraw(HDC hdc)
 {
+	HDC hMemDC;
+
+	HBITMAP OldBitmap;
+
+
+	hMemDC = CreateCompatibleDC(hdc);
+	OldBitmap = (HBITMAP)SelectObject(hMemDC, hBitmap);
+
 	for (int y = 0; y < MAX; y++)
 	{
 		for (int x = 0; x < MAX; x++)
 		{
-			Rectangle(hdc, RECT_WIDTH * x, RECT_HEIGHT * y, RECT_WIDTH * x + RECT_WIDTH, RECT_HEIGHT * y + RECT_HEIGHT);
+			if (9 != puzzle[y][x])
+			{
+				BitBlt(hdc, x*RECT_WIDTH, y*RECT_HEIGHT, RECT_WIDTH * x + RECT_WIDTH, RECT_HEIGHT * y + RECT_HEIGHT, hMemDC, x*RECT_WIDTH, RECT_HEIGHT * y, SRCCOPY);
+			}
+			
+			//Rectangle(hdc, RECT_WIDTH * x, RECT_HEIGHT * y, RECT_WIDTH * x + RECT_WIDTH, RECT_HEIGHT * y + RECT_HEIGHT);
 		}
 	}
 
@@ -150,6 +176,15 @@ void OnDraw(HDC hdc)
 			
 		}
 	}
+
+	
+	
+
+	
+
+	DeleteObject(SelectObject(hMemDC, OldBitmap)); 
+	DeleteDC(hMemDC); // hMemDC Á¦°Å
+
 }
 
 void OnLButtonDown(HWND hWnd, LPARAM lParam)
@@ -185,7 +220,7 @@ void OnLButtonDown(HWND hWnd, LPARAM lParam)
 		shakeArray();
 	}
 
-	InvalidateRect(hWnd, NULL, true);
+	InvalidateRect(hWnd, NULL, false);
 }
 
 void OnKeyDown(HWND hWnd,WPARAM wParam)
@@ -202,5 +237,5 @@ void OnKeyDown(HWND hWnd,WPARAM wParam)
 		shakeArray();
 		break;
 	}
-	InvalidateRect(hWnd, NULL, true);
+	InvalidateRect(hWnd, NULL, false);
 }

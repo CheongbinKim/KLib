@@ -144,7 +144,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
 	case WM_CREATE:
-		OnCreate(hWnd);
+		OnCreate(hWnd,hInst);
 		break;
 	case WM_LBUTTONDOWN:
 		OnLButtonDown(hWnd,lParam);
